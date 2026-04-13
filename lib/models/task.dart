@@ -20,4 +20,28 @@ class Task {
     };
   }
 
-  // Convert Firestore Document
+  // Convert Firestore Document → Task
+  factory Task.fromMap(String id, Map<String, dynamic> map) {
+    return Task(
+      id: id,
+      name: map['name'] ?? '',
+      isComplete: map['isComplete'] ?? false,
+      subtasks: List<String>.from(map['subtasks'] ?? []),
+    );
+  }
+
+  // Create a modified copy (used for updates)
+  Task copyWith({
+    String? id,
+    String? name,
+    bool? isComplete,
+    List<String>? subtasks,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isComplete: isComplete ?? this.isComplete,
+      subtasks: subtasks ?? this.subtasks,
+    );
+  }
+}
