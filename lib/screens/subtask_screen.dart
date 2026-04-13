@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/task.dart';
 import '../services/task_service.dart';
 
@@ -64,18 +65,18 @@ class _SubtaskScreenState extends State<SubtaskScreen> {
 
             // Subtask list
             Expanded(
-              child: StreamBuilder<Task>(
+              child: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('tasks')
                     .doc(widget.task.id)
-                    .snapshots()
-                    .map((doc) => Task.fromMap(doc.id, doc.data()!)),
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  final updatedTask = snapshot.data!;
+                  final data = snapshot.data!.data() as Map<String, dynamic>;
+                  final updatedTask = Task.fromMap(widget.task.id, data);
                   final subtasks = updatedTask.subtasks;
 
                   if (subtasks.isEmpty) {
